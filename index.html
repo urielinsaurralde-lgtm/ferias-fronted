@@ -325,9 +325,21 @@ let usuario=null;
 function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
-  document.getElementById("usuario").innerText="👤 "+data.name;
-}
 
+  document.getElementById("usuario").innerText="👤 "+data.name;
+
+  /* 🔥 REGISTRAR OPERADOR */
+  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      nombre:data.name,
+      email:data.email
+    })
+  });
+}
 /* MAPA ORIGINAL (intacto) */
 let map,lat=-31.73,lng=-60.53,capaActual,capas={};
 
