@@ -395,8 +395,10 @@ function enviar(){
   formData.append("nombre",nombre.value);
   formData.append("dni",dni.value);
   formData.append("email",email.value);
-  fromData.append("renspa",renspa.value);
-  fromData.append("actividad",actividad.value);
+
+  /* 🔥 ESTO FALTABA */
+  formData.append("renspa",renspa.value);
+  formData.append("actividad",actividad.value);
 
   let ferias=[];
   document.querySelectorAll('input[name="feria"]:checked')
