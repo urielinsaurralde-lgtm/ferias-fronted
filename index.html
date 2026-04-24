@@ -392,13 +392,11 @@ function enviar(){
 
   let formData=new FormData();
 
-  formData.append("nombre",nombre.value);
-  formData.append("dni",dni.value);
-  formData.append("email",email.value);
-
-  /* 🔥 ESTO FALTABA */
-  formData.append("renspa",renspa.value);
-  formData.append("actividad",actividad.value);
+  formData.append("nombre", document.getElementById("nombre").value);
+  formData.append("dni", document.getElementById("dni").value);
+  formData.append("email", document.getElementById("email").value);
+  formData.append("renspa", document.getElementById("renspa").value);
+  formData.append("actividad", document.getElementById("actividad").value);
 
   let ferias=[];
   document.querySelectorAll('input[name="feria"]:checked')
