@@ -416,7 +416,7 @@ function enviar(){
   // 🔥 FIX FOTO
   let file = document.getElementById("foto").files[0];
   if(file){
-    formData.append("foto", file);
+   formData.append("foto", document.getElementById("foto").files[0]);
   }
 
   fetch("https://api-ferias-da8q.onrender.com/guardar",{
