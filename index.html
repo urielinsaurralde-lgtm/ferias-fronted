@@ -398,12 +398,14 @@ function enviar(){
   formData.append("renspa", document.getElementById("renspa").value);
   formData.append("actividad", document.getElementById("actividad").value);
 
+  // 🔥 FIX observaciones
+  formData.append("observaciones", document.getElementById("observaciones").value);
+
   let ferias=[];
   document.querySelectorAll('input[name="feria"]:checked')
   .forEach(c=>ferias.push(c.value));
 
   formData.append("feria",ferias.join(", "));
-  formData.append("observaciones",observaciones.value);
 
   formData.append("lat",lat);
   formData.append("lng",lng);
@@ -411,12 +413,25 @@ function enviar(){
   formData.append("operador_nombre",usuario.name);
   formData.append("operador_email",usuario.email);
 
+  // 🔥 FIX FOTO
+  let file = document.getElementById("foto").files[0];
+  if(file){
+    formData.append("foto", file);
+  }
+
   fetch("https://api-ferias-da8q.onrender.com/guardar",{
     method:"POST",
     body:formData
   })
-  .then(()=>alert("✅ Guardado"))
-  .catch(()=>alert("❌ Error"));
+  .then(res => {
+    if(!res.ok) throw new Error("Error servidor");
+    return res.text();
+  })
+  .then(()=>alert("✅ Guardado correctamente"))
+  .catch(err=>{
+    console.log(err);
+    alert("❌ Error al enviar");
+  });
 }
 </script>
 
