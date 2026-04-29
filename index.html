@@ -39,6 +39,7 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
+
 .usuario{
   font-size:14px;
   color:#065f46;
@@ -65,16 +66,6 @@ body {
 
 #map { width: 100%; height: 100%; }
 
-.map-box.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  border-radius: 0;
-}
-
 .pin {
   position: absolute;
   top: 50%; left: 50%;
@@ -91,37 +82,7 @@ body {
   z-index: 1001;
   display: flex;
   gap: 4px;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(8px);
-  padding: 4px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
 }
-
-.map-controls button {
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  padding: 5px 7px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #065f46;
-}
-
-.gps-btn, .fullscreen-btn {
-  position: absolute;
-  bottom: 8px;
-  z-index: 1001;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.95);
-  cursor: pointer;
-}
-
-.gps-btn { right: 8px; }
-.fullscreen-btn { left: 8px; }
 
 .form {
   background: white;
@@ -129,10 +90,9 @@ body {
   border-radius: 15px;
 }
 
-.input-group { margin-bottom: 10px; }
-
 input, textarea {
   width: 100%;
+  margin-bottom:10px;
 }
 
 button {
@@ -150,11 +110,12 @@ button {
 <body>
 <div class="wrapper">
 
+<!-- LOGIN -->
 <div class="login-box">
   <div id="usuario" class="usuario">No logueado</div>
 
   <div id="g_id_onload"
-       data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
+       data-client_id="TU_CLIENT_ID"
        data-callback="handleCredentialResponse">
   </div>
 
@@ -163,7 +124,7 @@ button {
 
 <div class="map-title">📍 Indique su ubicación aquí</div>
 
-<div class="map-box" id="mapBox">
+<div class="map-box">
   <div id="map"></div>
 
   <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
@@ -174,9 +135,6 @@ button {
     <button onclick="cambiarCapa('hibrido')">🌐</button>
     <button onclick="cambiarCapa('google')">🟡</button>
   </div>
-
-  <button class="gps-btn" onclick="irMiUbicacion()">📍</button>
-  <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
 </div>
 
 <div class="form">
@@ -190,8 +148,7 @@ button {
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
-<!-- 🔥 BOTÓN CORREGIDO -->
-<button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
+<button onclick="enviar()">ENVIAR FORMULARIO</button>
 
 <div class="loader" id="loader">⏳ Enviando...</div>
 
@@ -206,11 +163,13 @@ function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
 
-  document.getElementById("usuario").innerText="👤 "+data.name;
+  document.getElementById("usuario").innerText=data.name;
 
   fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
     method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    headers:{
+      "Content-Type":"application/json"
+    },
     body:JSON.stringify({
       nombre:data.name,
       email:data.email
@@ -218,18 +177,14 @@ function handleCredentialResponse(response){
   });
 }
 
-let map,lat=-31.73,lng=-60.53,capaActual,capas={};
+/* MAPA */
+let map,lat=-31.73,lng=-60.53;
 
 function iniciarMapa(){
   map=L.map('map').setView([lat,lng],16);
 
-  const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-  const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-  const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
-
-  capas={mapa,satelite,google};
-  capaActual=google;
-  capaActual.addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+  .addTo(map);
 
   map.on("move",()=>{
     let c=map.getCenter();
@@ -239,49 +194,27 @@ function iniciarMapa(){
 }
 
 function cambiarCapa(tipo){
-  if(capaActual) map.removeLayer(capaActual);
-  capaActual=capas[tipo];
-  capaActual.addTo(map);
-}
-
-function irMiUbicacion(){
-  navigator.geolocation.getCurrentPosition(p=>{
-    lat=p.coords.latitude;
-    lng=p.coords.longitude;
-    map.setView([lat,lng],17);
-  });
-}
-
-function toggleFullscreen(){
-  document.getElementById("mapBox").classList.toggle("fullscreen");
-  setTimeout(()=>map.invalidateSize(),300);
+  console.log("cambiando a:", tipo);
 }
 
 window.onload=iniciarMapa;
 
-/* ENVIO */
+/* ENVIO ORIGINAL */
 function enviar(){
 
   if(!usuario){
-    alert("⚠️ Debe iniciar sesión con Google");
+    alert("Debe iniciar sesión");
     return;
   }
 
-  const boton = document.getElementById("btnEnviar");
-  const loader = document.getElementById("loader");
+  let formData=new FormData();
 
-  boton.disabled = true;
-  boton.innerText = "Enviando...";
-  loader.style.display = "block";
-
-  let formData = new FormData();
-
-  formData.append("nombre", nombre.value);
-  formData.append("dni", dni.value);
-  formData.append("email", email.value);
-  formData.append("renspa", renspa.value);
-  formData.append("actividad", actividad.value);
-  formData.append("observaciones", observaciones.value);
+  formData.append("nombre",nombre.value);
+  formData.append("dni",dni.value);
+  formData.append("email",email.value);
+  formData.append("renspa",renspa.value);
+  formData.append("actividad",actividad.value);
+  formData.append("observaciones",observaciones.value);
   formData.append("lat",lat);
   formData.append("lng",lng);
 
@@ -297,13 +230,8 @@ function enviar(){
     method:"POST",
     body:formData
   })
-  .then(()=>alert("✅ Guardado"))
-  .catch(()=>alert("❌ Error"))
-  .finally(()=>{
-    boton.disabled=false;
-    boton.innerText="ENVIAR FORMULARIO";
-    loader.style.display="none";
-  });
+  .then(()=>alert("Guardado OK"))
+  .catch(()=>alert("Error"));
 }
 </script>
 
