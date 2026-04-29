@@ -6,8 +6,10 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
+<!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
+<!-- LEAFLET -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -36,7 +38,6 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
-
 .usuario{
   font-size:14px;
   color:#065f46;
@@ -44,10 +45,10 @@ body {
 
 /* MAPA */
 .map-title {
-  text-align: center;
+  font-weight: bold;
   margin: 10px 0;
   color: #065f46;
-  font-weight: bold;
+  text-align: center;
 }
 
 .map-box {
@@ -55,7 +56,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   position: relative;
-  margin-bottom: 15px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 #map { height: 100%; }
@@ -69,62 +70,63 @@ body {
   z-index: 1000;
 }
 
+.map-controls {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 1001;
+  display: flex;
+  gap: 5px;
+  background: white;
+  padding: 5px;
+  border-radius: 8px;
+}
+
+.map-controls button {
+  border: none;
+  cursor: pointer;
+  background: transparent;
+}
+
+.gps-btn, .fullscreen-btn {
+  position: absolute;
+  bottom: 8px;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  cursor: pointer;
+}
+
+.gps-btn { right: 8px; }
+.fullscreen-btn { left: 8px; }
+
 /* FORM */
 .form {
   background: white;
   padding: 20px;
   border-radius: 15px;
+  margin-top: 15px;
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
-/* INPUTS BONITOS */
-.input-group {
-  position: relative;
-  margin-bottom: 12px;
-}
-
-.input-group i {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #10b981;
-}
-
-input, select, textarea {
+input, textarea, select {
   width: 100%;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #065f46;
-  color: white;
-  font-size: 16px;
-  padding-left: 40px;
-}
-
-input, select {
-  height: 48px;
-}
-
-textarea {
-  height: 80px;
+  margin-bottom: 10px;
   padding: 10px;
-  padding-left: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
 }
 
-input::placeholder, textarea::placeholder {
-  color: #a7f3d0;
-}
-
-/* BOTON */
 button {
   width: 100%;
-  height: 50px;
-  border-radius: 8px;
+  height: 45px;
   border: none;
+  border-radius: 8px;
   background: #16a34a;
   color: white;
   font-weight: bold;
-  margin-top: 10px;
   cursor: pointer;
 }
 
@@ -137,6 +139,7 @@ button {
 </head>
 
 <body>
+
 <div class="wrapper">
 
 <div class="login-box">
@@ -150,49 +153,38 @@ button {
   <div class="g_id_signin"></div>
 </div>
 
-<div class="map-title">📍 Indique su ubicación</div>
+<div class="map-title">📍 Indique su ubicación aquí</div>
 
-<div class="map-box">
+<div class="map-box" id="mapBox">
   <div id="map"></div>
-  <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
+
+  <div class="pin">📍</div>
+
+  <div class="map-controls">
+    <button onclick="cambiarCapa('mapa')">🗺️</button>
+    <button onclick="cambiarCapa('satelite')">🛰️</button>
+    <button onclick="cambiarCapa('google')">🌐</button>
+  </div>
+
+  <button class="gps-btn" onclick="irMiUbicacion()">📍</button>
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
 </div>
 
 <div class="form">
 
-<div class="input-group">
-<i class="fa fa-user"></i>
 <input id="nombre" placeholder="Nombre">
-</div>
-
-<div class="input-group">
-<i class="fa fa-id-card"></i>
 <input id="dni" placeholder="DNI">
-</div>
-
-<div class="input-group">
-<i class="fa fa-envelope"></i>
 <input id="email" placeholder="Email">
-</div>
-
-<div class="input-group">
-<i class="fa fa-barcode"></i>
 <input id="renspa" placeholder="RENSPA">
-</div>
 
-<!-- 🔥 SELECT BONITO -->
-<div class="input-group">
-<i class="fa fa-briefcase"></i>
+<!-- 🔥 SELECT CORRECTO -->
 <select id="actividad">
   <option value="">Seleccionar actividad</option>
   <option value="Artesano">Artesano</option>
   <option value="Horticultor">Horticultor</option>
 </select>
-</div>
 
-<div class="input-group">
-<i class="fa fa-camera"></i>
 <input type="file" id="foto">
-</div>
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
@@ -210,17 +202,32 @@ let usuario=null;
 function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
+
   document.getElementById("usuario").innerText="👤 "+data.name;
+
+  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body:JSON.stringify({
+      nombre:data.name,
+      email:data.email
+    })
+  });
 }
 
 /* MAPA */
-let map,lat=-31.73,lng=-60.53;
+let map,lat=-31.73,lng=-60.53,capaActual,capas={};
 
 function iniciarMapa(){
   map=L.map('map').setView([lat,lng],16);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-  .addTo(map);
+  const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+  const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+  const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
+
+  capas={mapa,satelite,google};
+  capaActual=google;
+  capaActual.addTo(map);
 
   map.on("move",()=>{
     let c=map.getCenter();
@@ -229,13 +236,32 @@ function iniciarMapa(){
   });
 }
 
+function cambiarCapa(tipo){
+  if(capaActual) map.removeLayer(capaActual);
+  capaActual=capas[tipo];
+  capaActual.addTo(map);
+}
+
+function irMiUbicacion(){
+  navigator.geolocation.getCurrentPosition(p=>{
+    lat=p.coords.latitude;
+    lng=p.coords.longitude;
+    map.setView([lat,lng],17);
+  });
+}
+
+function toggleFullscreen(){
+  document.getElementById("mapBox").classList.toggle("fullscreen");
+  setTimeout(()=>map.invalidateSize(),300);
+}
+
 window.onload=iniciarMapa;
 
 /* ENVIO */
 function enviar(){
 
   if(!usuario){
-    alert("Inicie sesión");
+    alert("⚠️ Inicie sesión");
     return;
   }
 
@@ -257,6 +283,9 @@ function enviar(){
   formData.append("lat",lat);
   formData.append("lng",lng);
 
+  formData.append("operador_nombre",usuario.name);
+  formData.append("operador_email",usuario.email);
+
   let file=foto.files[0];
   if(file){
     formData.append("foto",file);
@@ -266,7 +295,13 @@ function enviar(){
     method:"POST",
     body:formData
   })
-  .then(()=>alert("✅ Guardado"))
+  .then(()=>{
+
+    alert("✅ Guardado");
+
+    document.querySelector("form")?.reset();
+
+  })
   .catch(()=>alert("❌ Error"))
   .finally(()=>{
     boton.disabled=false;
