@@ -6,10 +6,8 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<!-- LEAFLET -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -19,8 +17,6 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #f0fdf4;
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
 }
@@ -39,211 +35,138 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
+
 .usuario{
   font-size:14px;
   color:#065f46;
-  margin-bottom:5px;
 }
 
 .map-title {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #065f46;
-  text-align: center;
-  font-size: 16px;
+  text-align:center;
+  margin-bottom:8px;
+  color:#065f46;
 }
 
 .map-box {
-  width: 100%;
-  height: 250px;
-  position: relative;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  margin-bottom: 15px;
+  height:250px;
+  border-radius:12px;
+  overflow:hidden;
+  position:relative;
+  margin-bottom:15px;
 }
 
-#map { width: 100%; height: 100%; }
-
-.map-box.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  border-radius: 0;
-}
+#map { height:100%; }
 
 .pin {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -100%);
-  font-size: 28px;
-  z-index: 1000;
-  color: #ef4444;
+  position:absolute;
+  top:50%; left:50%;
+  transform:translate(-50%,-100%);
+  font-size:28px;
+  color:red;
+  z-index:1000;
 }
 
 .map-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1001;
-  display: flex;
-  gap: 4px;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(8px);
-  padding: 4px;
-  border-radius: 10px;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.25);
+  position:absolute;
+  top:8px;
+  right:8px;
+  display:flex;
+  gap:4px;
+  background:white;
+  padding:4px;
+  border-radius:8px;
 }
 
 .map-controls button {
-  border: none;
-  background: transparent;
-  font-size: 14px;
-  padding: 5px 7px;
-  border-radius: 6px;
-  cursor: pointer;
-  color: #065f46;
-  transition: all 0.2s ease;
+  border:none;
+  background:transparent;
+  cursor:pointer;
 }
 
-.map-controls button:hover {
-  background: #e5e7eb;
+.gps-btn, .fullscreen-btn {
+  position:absolute;
+  bottom:8px;
+  width:38px;
+  height:38px;
+  border:none;
+  border-radius:50%;
+  background:white;
+  cursor:pointer;
 }
 
-.map-controls button.active {
-  background: #16a34a;
-  color: white;
-}
-
-.gps-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  z-index: 1001;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.gps-btn i {
-  font-size: 16px;
-  color: #16a34a;
-}
-
-.fullscreen-btn {
-  position: absolute;
-  bottom: 8px;
-  left: 8px;
-  z-index: 1001;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(6px);
-  box-shadow: 0 3px 10px rgba(0,0,0,0.3);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.fullscreen-btn i {
-  font-size: 16px;
-  color: #16a34a;
-}
+.gps-btn { right:8px; }
+.fullscreen-btn { left:8px; }
 
 .form {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  background:white;
+  padding:20px;
+  border-radius:15px;
 }
 
-h2 { text-align: center; margin-bottom: 15px; color: #064e3b; }
-
-.input-group { position: relative; margin-bottom: 12px; }
-
-.input-group i {
-  position: absolute;
-  left: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #10b981;
+.input-group {
+  margin-bottom:12px;
 }
 
 input, textarea {
-  width: 100%;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: #065f46;
-  color: white;
-  font-size: 16px;
-}
-
-input {
-  height: 48px;
-  padding-left: 40px;
+  width:100%;
+  border-radius:8px;
+  border:1px solid #ccc;
+  padding:10px;
 }
 
 textarea {
-  padding: 10px;
-  height: 80px;
-  resize: none;
+  resize:none;
 }
 
-input::placeholder, textarea::placeholder { color: #a7f3d0; }
-
 button {
-  width: 100%;
-  height: 50px;
-  margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  background: #16a34a;
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
+  width:100%;
+  height:50px;
+  background:#16a34a;
+  color:white;
+  border:none;
+  border-radius:8px;
+  margin-top:10px;
+  cursor:pointer;
 }
 
 .loader {
-  display: none;
-  text-align: center;
-  margin-top: 10px;
-  font-weight: bold;
+  display:none;
+  text-align:center;
+  margin-top:10px;
 }
 
+/* CHIPS */
 .chips-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
 }
 
-.chip input { display: none; }
+.chip input { display:none; }
 
 .chip span {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 20px;
-  background: #e5e7eb;
-  color: #065f46;
+  background:#e5e7eb;
+  padding:8px 12px;
+  border-radius:20px;
 }
 
 .chip input:checked + span {
-  background: #16a34a;
-  color: white;
+  background:#16a34a;
+  color:white;
+}
+
+/* FIX ICONO EN CHIPS */
+.chips-group i {
+  position:static;
+  margin-bottom:5px;
+  display:block;
+}
+
+/* CONTADOR */
+.char-counter {
+  font-size:12px;
+  text-align:right;
+  color:#065f46;
 }
 </style>
 </head>
@@ -252,47 +175,40 @@ button {
 <div class="wrapper">
 
 <div class="login-box">
-  <div id="usuario" class="usuario">No logueado</div>
+  <div id="usuario">No logueado</div>
+
   <div id="g_id_onload"
        data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
        data-callback="handleCredentialResponse">
   </div>
+
   <div class="g_id_signin"></div>
 </div>
 
 <div class="map-title">📍 Indique su ubicación aquí</div>
 
-<div class="map-box" id="mapBox">
+<div class="map-box">
   <div id="map"></div>
-
-  <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
+  <div class="pin">📍</div>
 
   <div class="map-controls">
     <button onclick="cambiarCapa('mapa')">🗺️</button>
     <button onclick="cambiarCapa('satelite')">🛰️</button>
-    <button onclick="cambiarCapa('hibrido')">🌐</button>
     <button onclick="cambiarCapa('google')">🟡</button>
   </div>
 
-  <button class="gps-btn" onclick="irMiUbicacion()">
-    <i class="fa-solid fa-location-crosshairs"></i>
-  </button>
-
-  <button class="fullscreen-btn" onclick="toggleFullscreen()">
-    <i class="fa-solid fa-expand"></i>
-  </button>
+  <button class="gps-btn" onclick="irMiUbicacion()">📍</button>
 </div>
 
 <div class="form">
-<h2>📋 Relevamiento</h2>
 
-<div class="input-group"><i class="fa fa-user"></i><input id="nombre" placeholder="Nombre y Apellido"></div>
-<div class="input-group"><i class="fa fa-id-card"></i><input id="dni" type="number" placeholder="DNI"></div>
-<div class="input-group"><i class="fa fa-envelope"></i><input id="email" type="email" placeholder="Email"></div>
-<div class="input-group"><i class="fa fa-barcode"></i><input id="renspa" placeholder="RENSPA"></div>
+<input id="nombre" placeholder="Nombre">
+<input id="dni" placeholder="DNI">
+<input id="email" placeholder="Email">
+<input id="renspa" placeholder="RENSPA">
 
-<!-- ✅ ACTIVIDAD COMO CHIPS -->
-<div class="input-group">
+<!-- ACTIVIDAD -->
+<div class="input-group chips-group">
   <i class="fa fa-briefcase"></i>
   <div class="chips-container">
     <label class="chip">
@@ -306,19 +222,22 @@ button {
   </div>
 </div>
 
-<div class="input-group"><i class="fa fa-camera"></i><input type="file" id="foto"></div>
+<input type="file" id="foto">
 
+<!-- FERIAS -->
 <div class="chips-container">
-<label class="chip"><input type="checkbox" name="feria" value="Feria 1"><span>Feria 1</span></label>
-<label class="chip"><input type="checkbox" name="feria" value="Feria 2"><span>Feria 2</span></label>
+  <label class="chip"><input type="checkbox" name="feria" value="Feria 1"><span>Feria 1</span></label>
+  <label class="chip"><input type="checkbox" name="feria" value="Feria 2"><span>Feria 2</span></label>
 </div>
 
-<textarea id="observaciones" placeholder="Observaciones"></textarea>
+<!-- OBSERVACIONES -->
+<textarea id="observaciones" maxlength="140" placeholder="Observaciones"></textarea>
+<div class="char-counter" id="contador">0 / 140</div>
 
 <button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
 <div class="loader" id="loader">⏳ Enviando...</div>
-</div>
 
+</div>
 </div>
 
 <script>
@@ -327,17 +246,7 @@ let usuario=null;
 function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
-
-  document.getElementById("usuario").innerText="👤 "+data.name;
-
-  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      nombre:data.name,
-      email:data.email
-    })
-  });
+  document.getElementById("usuario").innerText=data.name;
 }
 
 let map,lat=-31.73,lng=-60.53,capaActual,capas={};
@@ -347,17 +256,17 @@ function iniciarMapa(){
 
   const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
   const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-  const etiquetas=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png');
-  const lugares=L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{opacity:0.3});
-  const hibrido=L.layerGroup([satelite,lugares,etiquetas]);
   const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
 
-  capas={mapa,satelite,hibrido,google};
+  capas={mapa,satelite,google};
   capaActual=google;
   capaActual.addTo(map);
 
-  map.on("move",()=>{let c=map.getCenter();lat=c.lat;lng=c.lng;});
-  irMiUbicacion();
+  map.on("move",()=>{
+    let c=map.getCenter();
+    lat=c.lat;
+    lng=c.lng;
+  });
 }
 
 function cambiarCapa(tipo){
@@ -374,69 +283,67 @@ function irMiUbicacion(){
   });
 }
 
-function toggleFullscreen(){
-  document.getElementById("mapBox").classList.toggle("fullscreen");
-  setTimeout(()=>map.invalidateSize(),300);
-}
-
 window.onload=iniciarMapa;
 
+/* CONTADOR */
+const obs=document.getElementById("observaciones");
+const contador=document.getElementById("contador");
+
+obs.addEventListener("input",()=>{
+  contador.innerText=obs.value.length+" / 140";
+});
+
+/* ENVIO */
 function enviar(){
 
   if(!usuario){
-    alert("⚠️ Debe iniciar sesión con Google");
+    alert("Inicia sesión");
     return;
   }
 
-  const boton = document.getElementById("btnEnviar");
-  const loader = document.getElementById("loader");
+  const boton=document.getElementById("btnEnviar");
+  const loader=document.getElementById("loader");
 
-  boton.disabled = true;
-  boton.innerText = "Enviando...";
-  loader.style.display = "block";
+  boton.disabled=true;
+  loader.style.display="block";
 
-  let formData = new FormData();
+  let formData=new FormData();
 
-  formData.append("nombre", nombre.value);
-  formData.append("dni", dni.value);
-  formData.append("email", email.value);
-  formData.append("renspa", renspa.value);
+  formData.append("nombre",nombre.value);
+  formData.append("dni",dni.value);
+  formData.append("email",email.value);
+  formData.append("renspa",renspa.value);
 
-  // ✅ ACTIVIDAD ARRAY
-  let actividades = [];
+  let actividades=[];
   document.querySelectorAll('input[name="actividad"]:checked')
-    .forEach(c => actividades.push(c.value));
+    .forEach(c=>actividades.push(c.value));
 
-  formData.append("actividad", actividades.join(", "));
-
-  formData.append("observaciones", observaciones.value);
+  formData.append("actividad",actividades.join(", "));
 
   let ferias=[];
   document.querySelectorAll('input[name="feria"]:checked')
     .forEach(c=>ferias.push(c.value));
 
   formData.append("feria",ferias.join(", "));
+
+  formData.append("observaciones",observaciones.value);
   formData.append("lat",lat);
   formData.append("lng",lng);
 
-  formData.append("operador_nombre",usuario.name);
-  formData.append("operador_email",usuario.email);
-
-  let file = foto.files[0];
+  let file=foto.files[0];
   if(file){
-    formData.append("foto", file);
+    formData.append("foto",file);
   }
 
   fetch("https://api-ferias-da8q.onrender.com/guardar",{
     method:"POST",
     body:formData
   })
-  .then(()=>alert("✅ Guardado correctamente"))
-  .catch(()=>alert("❌ Error al enviar"))
+  .then(()=>alert("Guardado"))
+  .catch(()=>alert("Error"))
   .finally(()=>{
-    boton.disabled = false;
-    boton.innerText = "ENVIAR FORMULARIO";
-    loader.style.display = "none";
+    boton.disabled=false;
+    loader.style.display="none";
   });
 }
 </script>
