@@ -6,10 +6,8 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<!-- LEAFLET -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -19,8 +17,6 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #f0fdf4;
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
 }
@@ -40,80 +36,38 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
+
 .usuario{
   font-size:14px;
   color:#065f46;
-  margin-bottom:5px;
 }
 
 /* MAPA */
 .map-title {
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #065f46;
   text-align: center;
+  margin: 10px 0;
+  color: #065f46;
+  font-weight: bold;
 }
 
 .map-box {
-  width: 100%;
   height: 250px;
-  position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: relative;
   margin-bottom: 15px;
 }
 
-#map { width: 100%; height: 100%; }
-
-.map-box.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-}
+#map { height: 100%; }
 
 .pin {
   position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -100%);
   font-size: 28px;
+  color: red;
   z-index: 1000;
-  color: #ef4444;
 }
-
-.map-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1001;
-  display: flex;
-  gap: 4px;
-  background: rgba(255,255,255,0.9);
-  padding: 4px;
-  border-radius: 10px;
-}
-
-.map-controls button {
-  border: none;
-  background: transparent;
-  cursor: pointer;
-}
-
-.gps-btn, .fullscreen-btn {
-  position: absolute;
-  bottom: 8px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: white;
-  cursor: pointer;
-}
-.gps-btn { right: 8px; }
-.fullscreen-btn { left: 8px; }
 
 /* FORM */
 .form {
@@ -123,6 +77,7 @@ body {
   box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+/* INPUTS BONITOS */
 .input-group {
   position: relative;
   margin-bottom: 12px;
@@ -136,7 +91,6 @@ body {
   color: #10b981;
 }
 
-/* 🔥 ESTILO IMPORTANTE */
 input, select, textarea {
   width: 100%;
   border-radius: 8px;
@@ -144,22 +98,24 @@ input, select, textarea {
   background: #065f46;
   color: white;
   font-size: 16px;
+  padding-left: 40px;
 }
 
 input, select {
   height: 48px;
-  padding-left: 40px;
 }
 
 textarea {
-  padding: 10px;
   height: 80px;
+  padding: 10px;
+  padding-left: 10px;
 }
 
 input::placeholder, textarea::placeholder {
   color: #a7f3d0;
 }
 
+/* BOTON */
 button {
   width: 100%;
   height: 50px;
@@ -168,6 +124,7 @@ button {
   background: #16a34a;
   color: white;
   font-weight: bold;
+  margin-top: 10px;
   cursor: pointer;
 }
 
@@ -182,7 +139,6 @@ button {
 <body>
 <div class="wrapper">
 
-<!-- LOGIN -->
 <div class="login-box">
   <div id="usuario" class="usuario">No logueado</div>
 
@@ -194,40 +150,49 @@ button {
   <div class="g_id_signin"></div>
 </div>
 
-<div class="map-title">📍 Indique su ubicación aquí</div>
+<div class="map-title">📍 Indique su ubicación</div>
 
-<div class="map-box" id="mapBox">
+<div class="map-box">
   <div id="map"></div>
   <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
-
-  <div class="map-controls">
-    <button onclick="cambiarCapa('mapa')">🗺️</button>
-    <button onclick="cambiarCapa('satelite')">🛰️</button>
-    <button onclick="cambiarCapa('google')">🌐</button>
-  </div>
-
-  <button class="gps-btn" onclick="irMiUbicacion()">📍</button>
-  <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
 </div>
 
 <div class="form">
 
-<div class="input-group"><i class="fa fa-user"></i><input id="nombre" placeholder="Nombre"></div>
-<div class="input-group"><i class="fa fa-id-card"></i><input id="dni" placeholder="DNI"></div>
-<div class="input-group"><i class="fa fa-envelope"></i><input id="email" placeholder="Email"></div>
-<div class="input-group"><i class="fa fa-barcode"></i><input id="renspa" placeholder="RENSPA"></div>
-
-<!-- 🔥 SELECT NUEVO -->
 <div class="input-group">
-  <i class="fa fa-briefcase"></i>
-  <select id="actividad">
-    <option value="">Seleccione actividad</option>
-    <option value="Artesano">Artesano</option>
-    <option value="Horticultor">Horticultor</option>
-  </select>
+<i class="fa fa-user"></i>
+<input id="nombre" placeholder="Nombre">
 </div>
 
-<div class="input-group"><i class="fa fa-camera"></i><input type="file" id="foto"></div>
+<div class="input-group">
+<i class="fa fa-id-card"></i>
+<input id="dni" placeholder="DNI">
+</div>
+
+<div class="input-group">
+<i class="fa fa-envelope"></i>
+<input id="email" placeholder="Email">
+</div>
+
+<div class="input-group">
+<i class="fa fa-barcode"></i>
+<input id="renspa" placeholder="RENSPA">
+</div>
+
+<!-- 🔥 SELECT BONITO -->
+<div class="input-group">
+<i class="fa fa-briefcase"></i>
+<select id="actividad">
+  <option value="">Seleccionar actividad</option>
+  <option value="Artesano">Artesano</option>
+  <option value="Horticultor">Horticultor</option>
+</select>
+</div>
+
+<div class="input-group">
+<i class="fa fa-camera"></i>
+<input type="file" id="foto">
+</div>
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
@@ -246,29 +211,16 @@ function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
   document.getElementById("usuario").innerText="👤 "+data.name;
-
-  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      nombre:data.name,
-      email:data.email
-    })
-  });
 }
 
-let map,lat=-31.73,lng=-60.53,capaActual,capas={};
+/* MAPA */
+let map,lat=-31.73,lng=-60.53;
 
 function iniciarMapa(){
   map=L.map('map').setView([lat,lng],16);
 
-  const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-  const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-  const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
-
-  capas={mapa,satelite,google};
-  capaActual=google;
-  capaActual.addTo(map);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
+  .addTo(map);
 
   map.on("move",()=>{
     let c=map.getCenter();
@@ -277,54 +229,33 @@ function iniciarMapa(){
   });
 }
 
-function cambiarCapa(tipo){
-  if(capaActual) map.removeLayer(capaActual);
-  capaActual=capas[tipo];
-  capaActual.addTo(map);
-}
-
-function irMiUbicacion(){
-  navigator.geolocation.getCurrentPosition(p=>{
-    lat=p.coords.latitude;
-    lng=p.coords.longitude;
-    map.setView([lat,lng],17);
-  });
-}
-
-function toggleFullscreen(){
-  document.getElementById("mapBox").classList.toggle("fullscreen");
-  setTimeout(()=>map.invalidateSize(),300);
-}
-
 window.onload=iniciarMapa;
 
+/* ENVIO */
 function enviar(){
 
   if(!usuario){
-    alert("⚠️ Debe iniciar sesión con Google");
+    alert("Inicie sesión");
     return;
   }
 
-  const boton = document.getElementById("btnEnviar");
-  const loader = document.getElementById("loader");
+  const boton=document.getElementById("btnEnviar");
+  const loader=document.getElementById("loader");
 
-  boton.disabled = true;
-  boton.innerText = "Enviando...";
-  loader.style.display = "block";
+  boton.disabled=true;
+  boton.innerText="Enviando...";
+  loader.style.display="block";
 
-  let formData = new FormData();
+  let formData=new FormData();
 
-  formData.append("nombre", nombre.value);
-  formData.append("dni", dni.value);
-  formData.append("email", email.value);
-  formData.append("renspa", renspa.value);
-  formData.append("actividad", actividad.value);
-  formData.append("observaciones", observaciones.value);
+  formData.append("nombre",nombre.value);
+  formData.append("dni",dni.value);
+  formData.append("email",email.value);
+  formData.append("renspa",renspa.value);
+  formData.append("actividad",actividad.value);
+  formData.append("observaciones",observaciones.value);
   formData.append("lat",lat);
   formData.append("lng",lng);
-
-  formData.append("operador_nombre",usuario.name);
-  formData.append("operador_email",usuario.email);
 
   let file=foto.files[0];
   if(file){
