@@ -390,15 +390,21 @@ function enviar(){
     return;
   }
 
-  let formData=new FormData();
+  const boton = document.querySelector("button");
+  const loader = document.getElementById("loader");
+
+  // 🔒 BLOQUEAR BOTÓN
+  boton.disabled = true;
+  boton.innerText = "Enviando...";
+  loader.style.display = "block";
+
+  let formData = new FormData();
 
   formData.append("nombre", document.getElementById("nombre").value);
   formData.append("dni", document.getElementById("dni").value);
   formData.append("email", document.getElementById("email").value);
   formData.append("renspa", document.getElementById("renspa").value);
   formData.append("actividad", document.getElementById("actividad").value);
-
-  // 🔥 FIX observaciones
   formData.append("observaciones", document.getElementById("observaciones").value);
 
   let ferias=[];
@@ -406,17 +412,15 @@ function enviar(){
   .forEach(c=>ferias.push(c.value));
 
   formData.append("feria",ferias.join(", "));
-
   formData.append("lat",lat);
   formData.append("lng",lng);
 
   formData.append("operador_nombre",usuario.name);
   formData.append("operador_email",usuario.email);
 
-  // 🔥 FIX FOTO
   let file = document.getElementById("foto").files[0];
   if(file){
-   formData.append("foto", document.getElementById("foto").files[0]);
+    formData.append("foto", file);
   }
 
   fetch("https://api-ferias-da8q.onrender.com/guardar",{
@@ -427,10 +431,30 @@ function enviar(){
     if(!res.ok) throw new Error("Error servidor");
     return res.text();
   })
-  .then(()=>alert("✅ Guardado correctamente"))
+  .then(()=>{
+    alert("✅ Guardado correctamente");
+
+    // 🔄 RESET FORMULARIO
+    document.getElementById("nombre").value = "";
+    document.getElementById("dni").value = "";
+    document.getElementById("email").value = "";
+    document.getElementById("renspa").value = "";
+    document.getElementById("actividad").value = "";
+    document.getElementById("observaciones").value = "";
+    document.getElementById("foto").value = "";
+
+    document.querySelectorAll('input[name="feria"]').forEach(c => c.checked = false);
+
+  })
   .catch(err=>{
     console.log(err);
     alert("❌ Error al enviar");
+  })
+  .finally(()=>{
+    // 🔓 REACTIVAR BOTÓN
+    boton.disabled = false;
+    boton.innerText = "ENVIAR FORMULARIO";
+    loader.style.display = "none";
   });
 }
 </script>
