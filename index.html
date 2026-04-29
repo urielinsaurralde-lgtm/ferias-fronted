@@ -131,7 +131,7 @@ body {
 
 .input-group { margin-bottom: 10px; }
 
-input, textarea, select {
+input, textarea {
   width: 100%;
 }
 
@@ -185,18 +185,12 @@ button {
 <input id="dni" placeholder="DNI">
 <input id="email" placeholder="Email">
 <input id="renspa" placeholder="RENSPA">
-
-<!-- 🔥 CAMBIO ACÁ -->
-<select id="actividad">
-  <option value="">Seleccione actividad</option>
-  <option value="Artesano">Artesano</option>
-  <option value="Horticultor">Horticultor</option>
-</select>
-
+<input id="actividad" placeholder="Actividad">
 <input type="file" id="foto">
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
+<!-- 🔥 BOTÓN CORREGIDO -->
 <button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
 
 <div class="loader" id="loader">⏳ Enviando...</div>
