@@ -39,6 +39,7 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
+
 .usuario{
   font-size:14px;
   color:#065f46;
@@ -65,16 +66,6 @@ body {
 
 #map { width: 100%; height: 100%; }
 
-.map-box.fullscreen {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 9999;
-  border-radius: 0;
-}
-
 .pin {
   position: absolute;
   top: 50%; left: 50%;
@@ -91,25 +82,7 @@ body {
   z-index: 1001;
   display: flex;
   gap: 4px;
-  background: rgba(255,255,255,0.9);
-  backdrop-filter: blur(8px);
-  padding: 4px;
-  border-radius: 10px;
 }
-
-.gps-btn, .fullscreen-btn {
-  position: absolute;
-  bottom: 8px;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  border: none;
-  background: rgba(255,255,255,0.95);
-  cursor: pointer;
-}
-
-.gps-btn { right: 8px; }
-.fullscreen-btn { left: 8px; }
 
 .form {
   background: white;
@@ -126,18 +99,10 @@ button {
   width: 100%;
   height: 50px;
   margin-top: 10px;
-  border-radius: 8px;
-  border: none;
-  background: #16a34a;
-  color: white;
-  font-weight: bold;
-  font-size: 16px;
 }
 
 .loader {
   display: none;
-  text-align: center;
-  margin-top: 10px;
 }
 </style>
 </head>
@@ -145,18 +110,31 @@ button {
 <body>
 <div class="wrapper">
 
+<!-- LOGIN -->
 <div class="login-box">
-  <div id="usuario">No logueado</div>
+  <div id="usuario" class="usuario">No logueado</div>
+
   <div id="g_id_onload"
        data-client_id="TU_CLIENT_ID"
        data-callback="handleCredentialResponse">
   </div>
+
   <div class="g_id_signin"></div>
 </div>
 
 <div class="map-title">📍 Indique su ubicación aquí</div>
-<div class="map-box" id="mapBox">
+
+<div class="map-box">
   <div id="map"></div>
+
+  <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
+
+  <div class="map-controls">
+    <button onclick="cambiarCapa('mapa')">🗺️</button>
+    <button onclick="cambiarCapa('satelite')">🛰️</button>
+    <button onclick="cambiarCapa('hibrido')">🌐</button>
+    <button onclick="cambiarCapa('google')">🟡</button>
+  </div>
 </div>
 
 <div class="form">
@@ -170,24 +148,28 @@ button {
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
-<button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
+<button onclick="enviar()">ENVIAR FORMULARIO</button>
+
 <div class="loader" id="loader">⏳ Enviando...</div>
 
 </div>
+
 </div>
 
 <script>
 let usuario=null;
-let enviando=false;
 
 function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
+
   document.getElementById("usuario").innerText=data.name;
 
   fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
     method:"POST",
-    headers:{ "Content-Type":"application/json"},
+    headers:{
+      "Content-Type":"application/json"
+    },
     body:JSON.stringify({
       nombre:data.name,
       email:data.email
@@ -211,26 +193,19 @@ function iniciarMapa(){
   });
 }
 
+function cambiarCapa(tipo){
+  console.log("cambiando a:", tipo);
+}
+
 window.onload=iniciarMapa;
 
-/* ENVIO */
+/* ENVIO ORIGINAL */
 function enviar(){
-
-  if(enviando) return;
-  enviando=true;
 
   if(!usuario){
     alert("Debe iniciar sesión");
-    enviando=false;
     return;
   }
-
-  const boton=document.getElementById("btnEnviar");
-  const loader=document.getElementById("loader");
-
-  boton.disabled=true;
-  boton.innerText="Enviando...";
-  loader.style.display="block";
 
   let formData=new FormData();
 
@@ -255,31 +230,8 @@ function enviar(){
     method:"POST",
     body:formData
   })
-  .then(res=>{
-    if(!res.ok) throw new Error();
-    return res.text();
-  })
-  .then(()=>{
-    alert("Guardado OK");
-
-    // RESET
-    nombre.value="";
-    dni.value="";
-    email.value="";
-    renspa.value="";
-    actividad.value="";
-    observaciones.value="";
-    foto.value="";
-  })
-  .catch(()=>{
-    alert("Error");
-  })
-  .finally(()=>{
-    boton.disabled=false;
-    boton.innerText="ENVIAR FORMULARIO";
-    loader.style.display="none";
-    enviando=false;
-  });
+  .then(()=>alert("Guardado OK"))
+  .catch(()=>alert("Error"));
 }
 </script>
 
