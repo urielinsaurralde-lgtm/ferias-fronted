@@ -6,10 +6,8 @@
 
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<!-- GOOGLE LOGIN -->
 <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-<!-- LEAFLET -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
@@ -19,8 +17,6 @@
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #f0fdf4;
-  width: 100%;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
 }
@@ -31,6 +27,7 @@ body {
   padding: 15px;
 }
 
+/* LOGIN */
 .login-box{
   background:white;
   padding:10px;
@@ -40,69 +37,107 @@ body {
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
 
-.usuario{
-  font-size:14px;
-  color:#065f46;
-  margin-bottom:5px;
-}
-
+/* MAPA */
 .map-title {
   font-weight: bold;
   margin-bottom: 8px;
-  color: #065f46;
   text-align: center;
-  font-size: 16px;
+  color:#065f46;
 }
 
 .map-box {
-  width: 100%;
   height: 250px;
-  position: relative;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  position: relative;
   margin-bottom: 15px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.1);
 }
 
-#map { width: 100%; height: 100%; }
-
-.pin {
-  position: absolute;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -100%);
-  font-size: 28px;
-  z-index: 1000;
-  color: #ef4444;
-}
+#map { height: 100%; }
 
 .map-controls {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 1001;
-  display: flex;
-  gap: 4px;
+  position:absolute;
+  top:8px;
+  right:8px;
+  background:white;
+  padding:5px;
+  border-radius:10px;
+  display:flex;
+  gap:5px;
 }
 
+.map-controls button {
+  border:none;
+  background:#e5e7eb;
+  padding:5px;
+  border-radius:5px;
+  cursor:pointer;
+}
+
+/* FORM */
 .form {
-  background: white;
-  padding: 20px;
-  border-radius: 15px;
+  background:white;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
 }
 
-input, textarea {
-  width: 100%;
+.input-group {
+  margin-bottom:12px;
+}
+
+input, select, textarea {
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #d1d5db;
+  font-size:15px;
+}
+
+textarea {
+  resize:none;
+  height:80px;
+}
+
+/* FERIAS CHIPS */
+.chips-container {
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
   margin-bottom:10px;
 }
 
+.chip input { display:none; }
+
+.chip span {
+  padding:8px 12px;
+  border-radius:20px;
+  background:#e5e7eb;
+  cursor:pointer;
+}
+
+.chip input:checked + span {
+  background:#16a34a;
+  color:white;
+}
+
+/* BOTON */
 button {
-  width: 100%;
-  height: 50px;
-  margin-top: 10px;
+  width:100%;
+  height:50px;
+  background:#16a34a;
+  color:white;
+  border:none;
+  border-radius:10px;
+  font-weight:bold;
+  cursor:pointer;
 }
 
 .loader {
-  display: none;
+  display:none;
+  text-align:center;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -110,13 +145,12 @@ button {
 <body>
 <div class="wrapper">
 
-<!-- LOGIN -->
 <div class="login-box">
-  <div id="usuario" class="usuario">No logueado</div>
+  <div id="usuario">No logueado</div>
 
   <div id="g_id_onload"
-       data-client_id="TU_CLIENT_ID"
-       data-callback="handleCredentialResponse">
+    data-client_id="TU_CLIENT_ID"
+    data-callback="handleCredentialResponse">
   </div>
 
   <div class="g_id_signin"></div>
@@ -127,28 +161,58 @@ button {
 <div class="map-box">
   <div id="map"></div>
 
-  <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
-
   <div class="map-controls">
     <button onclick="cambiarCapa('mapa')">🗺️</button>
     <button onclick="cambiarCapa('satelite')">🛰️</button>
-    <button onclick="cambiarCapa('hibrido')">🌐</button>
     <button onclick="cambiarCapa('google')">🟡</button>
   </div>
 </div>
 
 <div class="form">
 
+<div class="input-group">
 <input id="nombre" placeholder="Nombre">
+</div>
+
+<div class="input-group">
 <input id="dni" placeholder="DNI">
+</div>
+
+<div class="input-group">
 <input id="email" placeholder="Email">
+</div>
+
+<div class="input-group">
 <input id="renspa" placeholder="RENSPA">
-<input id="actividad" placeholder="Actividad">
+</div>
+
+<!-- ✅ ACTIVIDAD SELECT -->
+<div class="input-group">
+<select id="actividad">
+  <option value="">Seleccionar actividad</option>
+  <option value="Artesano">Artesano</option>
+  <option value="Horticultor">Horticultor</option>
+</select>
+</div>
+
+<!-- ✅ FERIAS (RECUPERADO) -->
+<div class="chips-container">
+<label class="chip">
+<input type="checkbox" value="Feria 1" name="feria">
+<span>Feria 1</span>
+</label>
+
+<label class="chip">
+<input type="checkbox" value="Feria 2" name="feria">
+<span>Feria 2</span>
+</label>
+</div>
+
 <input type="file" id="foto">
 
 <textarea id="observaciones" placeholder="Observaciones"></textarea>
 
-<button onclick="enviar()">ENVIAR FORMULARIO</button>
+<button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
 
 <div class="loader" id="loader">⏳ Enviando...</div>
 
@@ -162,29 +226,21 @@ let usuario=null;
 function handleCredentialResponse(response){
   const data=JSON.parse(atob(response.credential.split('.')[1]));
   usuario=data;
-
-  document.getElementById("usuario").innerText=data.name;
-
-  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
-    method:"POST",
-    headers:{
-      "Content-Type":"application/json"
-    },
-    body:JSON.stringify({
-      nombre:data.name,
-      email:data.email
-    })
-  });
+  document.getElementById("usuario").innerText="👤 "+data.name;
 }
 
-/* MAPA */
-let map,lat=-31.73,lng=-60.53;
+let map,lat=-31.73,lng=-60.53,capaActual,capas={};
 
 function iniciarMapa(){
   map=L.map('map').setView([lat,lng],16);
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png')
-  .addTo(map);
+  const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+  const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+  const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
+
+  capas={mapa,satelite,google};
+  capaActual=google;
+  capaActual.addTo(map);
 
   map.on("move",()=>{
     let c=map.getCenter();
@@ -194,18 +250,26 @@ function iniciarMapa(){
 }
 
 function cambiarCapa(tipo){
-  console.log("cambiando a:", tipo);
+  map.removeLayer(capaActual);
+  capaActual=capas[tipo];
+  capaActual.addTo(map);
 }
 
 window.onload=iniciarMapa;
 
-/* ENVIO ORIGINAL */
 function enviar(){
 
   if(!usuario){
-    alert("Debe iniciar sesión");
+    alert("Inicia sesión");
     return;
   }
+
+  const boton=document.getElementById("btnEnviar");
+  const loader=document.getElementById("loader");
+
+  boton.disabled=true;
+  boton.innerText="Enviando...";
+  loader.style.display="block";
 
   let formData=new FormData();
 
@@ -217,6 +281,13 @@ function enviar(){
   formData.append("observaciones",observaciones.value);
   formData.append("lat",lat);
   formData.append("lng",lng);
+
+  // ✅ FERIAS
+  let ferias=[];
+  document.querySelectorAll('input[name="feria"]:checked')
+  .forEach(c=>ferias.push(c.value));
+
+  formData.append("feria",ferias.join(", "));
 
   formData.append("operador_nombre",usuario.name);
   formData.append("operador_email",usuario.email);
@@ -230,8 +301,13 @@ function enviar(){
     method:"POST",
     body:formData
   })
-  .then(()=>alert("Guardado OK"))
-  .catch(()=>alert("Error"));
+  .then(()=>alert("✅ Guardado"))
+  .catch(()=>alert("❌ Error"))
+  .finally(()=>{
+    boton.disabled=false;
+    boton.innerText="ENVIAR FORMULARIO";
+    loader.style.display="none";
+  });
 }
 </script>
 
