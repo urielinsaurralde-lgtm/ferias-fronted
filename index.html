@@ -35,63 +35,59 @@ body {
   text-align:center;
   box-shadow:0 3px 10px rgba(0,0,0,0.1);
 }
-
 .usuario{
   font-size:14px;
   color:#065f46;
 }
 
 .map-title {
-  text-align:center;
-  margin-bottom:8px;
-  color:#065f46;
+  text-align: center;
+  margin-bottom: 8px;
+  color: #065f46;
 }
 
 .map-box {
-  height:250px;
-  border-radius:12px;
-  overflow:hidden;
-  position:relative;
-  margin-bottom:15px;
+  height: 250px;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 15px;
 }
 
-#map { height:100%; }
+#map { height: 100%; }
 
 .pin {
-  position:absolute;
-  top:50%; left:50%;
-  transform:translate(-50%,-100%);
-  font-size:28px;
-  color:red;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -100%);
+  font-size: 28px;
+  color: red;
   z-index:1000;
 }
 
 .map-controls {
-  position:absolute;
-  top:8px;
-  right:8px;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index:1001;
   display:flex;
   gap:4px;
-  background:white;
-  padding:4px;
-  border-radius:8px;
 }
 
 .map-controls button {
   border:none;
-  background:transparent;
+  background:white;
+  border-radius:6px;
   cursor:pointer;
 }
 
 .gps-btn, .fullscreen-btn {
   position:absolute;
   bottom:8px;
-  width:38px;
-  height:38px;
+  z-index:1001;
   border:none;
   border-radius:50%;
-  background:white;
-  cursor:pointer;
+  width:38px;height:38px;
 }
 
 .gps-btn { right:8px; }
@@ -104,18 +100,38 @@ body {
 }
 
 .input-group {
-  margin-bottom:12px;
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.input-group i {
+  position:absolute;
+  left:12px;
+  top:50%;
+  transform:translateY(-50%);
+  color:#10b981;
 }
 
 input, textarea {
   width:100%;
   border-radius:8px;
   border:1px solid #ccc;
-  padding:10px;
+  background:#065f46;
+  color:white;
+}
+
+input {
+  height:48px;
+  padding-left:40px;
 }
 
 textarea {
-  resize:none;
+  padding:10px;
+  height:80px;
+}
+
+input::placeholder, textarea::placeholder {
+  color:#a7f3d0;
 }
 
 button {
@@ -126,28 +142,25 @@ button {
   border:none;
   border-radius:8px;
   margin-top:10px;
-  cursor:pointer;
 }
 
 .loader {
   display:none;
   text-align:center;
-  margin-top:10px;
 }
 
-/* CHIPS */
 .chips-container {
   display:flex;
-  gap:8px;
   flex-wrap:wrap;
+  gap:8px;
 }
 
 .chip input { display:none; }
 
 .chip span {
-  background:#e5e7eb;
   padding:8px 12px;
   border-radius:20px;
+  background:#e5e7eb;
 }
 
 .chip input:checked + span {
@@ -155,18 +168,11 @@ button {
   color:white;
 }
 
-/* FIX ICONO EN CHIPS */
-.chips-group i {
-  position:static;
-  margin-bottom:5px;
-  display:block;
-}
-
-/* CONTADOR */
-.char-counter {
+.char-counter{
   font-size:12px;
   text-align:right;
   color:#065f46;
+  margin-top:4px;
 }
 </style>
 </head>
@@ -176,16 +182,14 @@ button {
 
 <div class="login-box">
   <div id="usuario">No logueado</div>
-
   <div id="g_id_onload"
-       data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
-       data-callback="handleCredentialResponse">
+    data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
+    data-callback="handleCredentialResponse">
   </div>
-
   <div class="g_id_signin"></div>
 </div>
 
-<div class="map-title">📍 Indique su ubicación aquí</div>
+<div class="map-title">📍 Ubicación</div>
 
 <div class="map-box">
   <div id="map"></div>
@@ -194,23 +198,24 @@ button {
   <div class="map-controls">
     <button onclick="cambiarCapa('mapa')">🗺️</button>
     <button onclick="cambiarCapa('satelite')">🛰️</button>
-    <button onclick="cambiarCapa('google')">🟡</button>
+    <button onclick="cambiarCapa('google')">🌐</button>
   </div>
 
   <button class="gps-btn" onclick="irMiUbicacion()">📍</button>
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">⛶</button>
 </div>
 
 <div class="form">
 
-<input id="nombre" placeholder="Nombre">
-<input id="dni" placeholder="DNI">
-<input id="email" placeholder="Email">
-<input id="renspa" placeholder="RENSPA">
+<div class="input-group"><i class="fa fa-user"></i><input id="nombre" placeholder="Nombre"></div>
+<div class="input-group"><i class="fa fa-id-card"></i><input id="dni"></div>
+<div class="input-group"><i class="fa fa-envelope"></i><input id="email"></div>
+<div class="input-group"><i class="fa fa-barcode"></i><input id="renspa"></div>
 
 <!-- ACTIVIDAD -->
-<div class="input-group chips-group">
+<div class="input-group">
   <i class="fa fa-briefcase"></i>
-  <div class="chips-container">
+  <div class="chips-container" style="padding-left:40px;">
     <label class="chip">
       <input type="checkbox" name="actividad" value="Artesano">
       <span>Artesano</span>
@@ -222,19 +227,17 @@ button {
   </div>
 </div>
 
-<input type="file" id="foto">
+<div class="input-group"><i class="fa fa-camera"></i><input type="file" id="foto"></div>
 
-<!-- FERIAS -->
 <div class="chips-container">
-  <label class="chip"><input type="checkbox" name="feria" value="Feria 1"><span>Feria 1</span></label>
-  <label class="chip"><input type="checkbox" name="feria" value="Feria 2"><span>Feria 2</span></label>
+<label class="chip"><input type="checkbox" name="feria" value="Feria 1"><span>Feria 1</span></label>
+<label class="chip"><input type="checkbox" name="feria" value="Feria 2"><span>Feria 2</span></label>
 </div>
 
-<!-- OBSERVACIONES -->
 <textarea id="observaciones" maxlength="140" placeholder="Observaciones"></textarea>
 <div class="char-counter" id="contador">0 / 140</div>
 
-<button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
+<button id="btnEnviar" onclick="enviar()">ENVIAR</button>
 <div class="loader" id="loader">⏳ Enviando...</div>
 
 </div>
@@ -283,9 +286,13 @@ function irMiUbicacion(){
   });
 }
 
+function toggleFullscreen(){
+  document.querySelector(".map-box").classList.toggle("fullscreen");
+}
+
 window.onload=iniciarMapa;
 
-/* CONTADOR */
+// CONTADOR
 const obs=document.getElementById("observaciones");
 const contador=document.getElementById("contador");
 
@@ -293,58 +300,25 @@ obs.addEventListener("input",()=>{
   contador.innerText=obs.value.length+" / 140";
 });
 
-/* ENVIO */
+// ENVIO
 function enviar(){
-
-  if(!usuario){
-    alert("Inicia sesión");
-    return;
-  }
-
   const boton=document.getElementById("btnEnviar");
   const loader=document.getElementById("loader");
 
   boton.disabled=true;
   loader.style.display="block";
 
-  let formData=new FormData();
-
-  formData.append("nombre",nombre.value);
-  formData.append("dni",dni.value);
-  formData.append("email",email.value);
-  formData.append("renspa",renspa.value);
-
   let actividades=[];
   document.querySelectorAll('input[name="actividad"]:checked')
-    .forEach(c=>actividades.push(c.value));
+  .forEach(c=>actividades.push(c.value));
 
-  formData.append("actividad",actividades.join(", "));
+  console.log("Actividad:",actividades);
 
-  let ferias=[];
-  document.querySelectorAll('input[name="feria"]:checked')
-    .forEach(c=>ferias.push(c.value));
-
-  formData.append("feria",ferias.join(", "));
-
-  formData.append("observaciones",observaciones.value);
-  formData.append("lat",lat);
-  formData.append("lng",lng);
-
-  let file=foto.files[0];
-  if(file){
-    formData.append("foto",file);
-  }
-
-  fetch("https://api-ferias-da8q.onrender.com/guardar",{
-    method:"POST",
-    body:formData
-  })
-  .then(()=>alert("Guardado"))
-  .catch(()=>alert("Error"))
-  .finally(()=>{
+  setTimeout(()=>{
     boton.disabled=false;
     loader.style.display="none";
-  });
+    alert("Enviado (demo)");
+  },1000);
 }
 </script>
 
