@@ -31,18 +31,19 @@ body {
   padding: 15px;
 }
 
-.login-box{
-  background:white;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-  text-align:center;
-  box-shadow:0 3px 10px rgba(0,0,0,0.1);
+.login-box {
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.1);
 }
-.usuario{
-  font-size:14px;
-  color:#065f46;
-  margin-bottom:5px;
+
+.usuario {
+  font-size: 14px;
+  color: #065f46;
+  margin-bottom: 5px;
 }
 
 .map-title {
@@ -67,10 +68,8 @@ body {
 
 .map-box.fullscreen {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
   z-index: 9999;
   border-radius: 0;
 }
@@ -86,8 +85,7 @@ body {
 
 .map-controls {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 8px; right: 8px;
   z-index: 1001;
   display: flex;
   gap: 4px;
@@ -107,24 +105,19 @@ body {
   cursor: pointer;
   color: #065f46;
   transition: all 0.2s ease;
+  width: auto;
+  height: auto;
+  margin-top: 0;
 }
 
-.map-controls button:hover {
-  background: #e5e7eb;
-}
-
-.map-controls button.active {
-  background: #16a34a;
-  color: white;
-}
+.map-controls button:hover { background: #e5e7eb; }
+.map-controls button.active { background: #16a34a; color: white; }
 
 .gps-btn {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 8px; right: 8px;
   z-index: 1001;
-  width: 38px;
-  height: 38px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.95);
@@ -134,20 +127,16 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 0;
 }
 
-.gps-btn i {
-  font-size: 16px;
-  color: #16a34a;
-}
+.gps-btn i { font-size: 16px; color: #16a34a; }
 
 .fullscreen-btn {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: 8px; left: 8px;
   z-index: 1001;
-  width: 38px;
-  height: 38px;
+  width: 38px; height: 38px;
   border-radius: 50%;
   border: none;
   background: rgba(255,255,255,0.95);
@@ -157,12 +146,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 0;
 }
 
-.fullscreen-btn i {
-  font-size: 16px;
-  color: #16a34a;
-}
+.fullscreen-btn i { font-size: 16px; color: #16a34a; }
 
 .form {
   background: white;
@@ -205,7 +192,8 @@ textarea {
 
 input::placeholder, textarea::placeholder { color: #a7f3d0; }
 
-button {
+/* Botón principal */
+button#btnEnviar {
   width: 100%;
   height: 50px;
   margin-top: 10px;
@@ -223,6 +211,7 @@ button {
   text-align: center;
   margin-top: 10px;
   font-weight: bold;
+  color: #065f46;
 }
 
 .chips-container {
@@ -239,11 +228,29 @@ button {
   border-radius: 20px;
   background: #e5e7eb;
   color: #065f46;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s;
 }
 
 .chip input:checked + span {
   background: #16a34a;
   color: white;
+}
+
+.section-label {
+  font-size: 13px;
+  color: #065f46;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+  margin-bottom: 4px;
 }
 </style>
 </head>
@@ -251,145 +258,190 @@ button {
 <body>
 <div class="wrapper">
 
-<div class="login-box">
-  <div id="usuario" class="usuario">No logueado</div>
-  <div id="g_id_onload"
-       data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
-       data-callback="handleCredentialResponse">
-  </div>
-  <div class="g_id_signin"></div>
-</div>
-
-<div class="map-title">📍 Indique su ubicación aquí</div>
-
-<div class="map-box" id="mapBox">
-  <div id="map"></div>
-
-  <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
-
-  <div class="map-controls">
-    <button onclick="cambiarCapa('mapa')">🗺️</button>
-    <button onclick="cambiarCapa('satelite')">🛰️</button>
-    <button onclick="cambiarCapa('hibrido')">🌐</button>
-    <button onclick="cambiarCapa('google')">🟡</button>
+  <!-- LOGIN -->
+  <div class="login-box">
+    <div id="usuario" class="usuario">No logueado</div>
+    <div id="g_id_onload"
+         data-client_id="143500420704-b5pmbegpnaclchkauimjt06e3ehnrkms.apps.googleusercontent.com"
+         data-callback="handleCredentialResponse">
+    </div>
+    <div class="g_id_signin"></div>
   </div>
 
-  <button class="gps-btn" onclick="irMiUbicacion()">
-    <i class="fa-solid fa-location-crosshairs"></i>
-  </button>
+  <!-- MAPA -->
+  <div class="map-title">📍 Indique su ubicación aquí</div>
 
-  <button class="fullscreen-btn" onclick="toggleFullscreen()">
-    <i class="fa-solid fa-expand"></i>
-  </button>
-</div>
+  <div class="map-box" id="mapBox">
+    <div id="map"></div>
+    <div class="pin"><i class="fa-solid fa-location-dot"></i></div>
 
-<div class="form">
-<h2>📋 Relevamiento</h2>
+    <div class="map-controls">
+      <button onclick="cambiarCapa('mapa')">🗺️</button>
+      <button onclick="cambiarCapa('satelite')">🛰️</button>
+      <button onclick="cambiarCapa('hibrido')">🌐</button>
+      <button onclick="cambiarCapa('google')">🟡</button>
+    </div>
 
-<div class="input-group"><i class="fa fa-user"></i><input id="nombre" placeholder="Nombre y Apellido"></div>
-<div class="input-group"><i class="fa fa-id-card"></i><input id="dni" type="number" placeholder="DNI"></div>
-<div class="input-group"><i class="fa fa-envelope"></i><input id="email" type="email" placeholder="Email"></div>
-<div class="input-group"><i class="fa fa-barcode"></i><input id="renspa" placeholder="RENSPA"></div>
+    <button class="gps-btn" onclick="irMiUbicacion()">
+      <i class="fa-solid fa-location-crosshairs"></i>
+    </button>
 
-<!-- ✅ ACTIVIDAD COMO CHIPS -->
-<div class="input-group">
-  <i class="fa fa-briefcase"></i>
-  <div class="chips-container" style="padding-left:40px;">
-    <label class="chip">
-      <input type="checkbox" name="actividad" value="Artesano">
-      <span>Artesano</span>
-    </label>
-    <label class="chip">
-      <input type="checkbox" name="actividad" value="Horticultor">
-      <span>Horticultor</span>
-    </label>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">
+      <i class="fa-solid fa-expand"></i>
+    </button>
   </div>
-</div>
 
-<div class="input-group"><i class="fa fa-camera"></i><input type="file" id="foto"></div>
+  <!-- FORMULARIO -->
+  <div class="form">
+    <h2>📋 Relevamiento</h2>
 
-<div class="chips-container">
-<label class="chip"><input type="checkbox" name="feria" value="Feria 1"><span>Feria 1</span></label>
-<label class="chip"><input type="checkbox" name="feria" value="Feria 2"><span>Feria 2</span></label>
-</div>
+    <div class="input-group"><i class="fa fa-user"></i><input id="nombre" placeholder="Nombre y Apellido"></div>
+    <div class="input-group"><i class="fa fa-id-card"></i><input id="dni" type="number" placeholder="DNI"></div>
+    <div class="input-group"><i class="fa fa-envelope"></i><input id="email" type="email" placeholder="Email"></div>
+    <div class="input-group"><i class="fa fa-barcode"></i><input id="renspa" placeholder="RENSPA"></div>
 
-<textarea id="observaciones" maxlength="140" placeholder="Observaciones"></textarea>
-<div class="char-counter" id="contador">0 / 140</div>
-  
-<button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
-<div class="loader" id="loader">⏳ Enviando...</div>
-</div>
+    <!-- ACTIVIDAD -->
+    <div class="input-group">
+      <i class="fa fa-briefcase"></i>
+      <div class="chips-container" style="padding-left:40px;">
+        <label class="chip">
+          <input type="checkbox" name="actividad" value="Artesano">
+          <span>Artesano</span>
+        </label>
+        <label class="chip">
+          <input type="checkbox" name="actividad" value="Horticultor">
+          <span>Horticultor</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- FOTO -->
+    <div class="input-group"><i class="fa fa-camera"></i><input type="file" id="foto" accept="image/*" capture="environment"></div>
+
+    <!-- FERIAS DINÁMICAS -->
+    <div class="input-group">
+      <i class="fa fa-store"></i>
+      <div style="padding-left:40px;">
+        <div class="section-label">Ferias</div>
+        <div class="chips-container" id="chips-ferias">
+          <span style="color:#6b7280; font-size:13px;">⏳ Cargando ferias...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBSERVACIONES -->
+    <textarea id="observaciones" maxlength="140" placeholder="Observaciones"></textarea>
+    <div class="char-counter" id="contador">0 / 140</div>
+
+    <button id="btnEnviar" onclick="enviar()">ENVIAR FORMULARIO</button>
+    <div class="loader" id="loader">⏳ Enviando...</div>
+  </div>
 
 </div>
 
 <script>
-let usuario=null;
+const API = "https://api-ferias-da8q.onrender.com";
 
-function handleCredentialResponse(response){
-  const data=JSON.parse(atob(response.credential.split('.')[1]));
-  usuario=data;
+// ─── GOOGLE LOGIN ────────────────────────────────────
+let usuario = null;
 
-  document.getElementById("usuario").innerText="👤 "+data.name;
+function handleCredentialResponse(response) {
+  const data = JSON.parse(atob(response.credential.split('.')[1]));
+  usuario = data;
+  document.getElementById("usuario").innerText = "👤 " + data.name;
 
-  fetch("https://api-ferias-da8q.onrender.com/registrar-operador",{
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
-    body:JSON.stringify({
-      nombre:data.name,
-      email:data.email
-    })
+  fetch(API + "/registrar-operador", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ nombre: data.name, email: data.email })
   });
 }
 
-let map,lat=-31.73,lng=-60.53,capaActual,capas={};
+// ─── MAPA ────────────────────────────────────────────
+let map, lat = -31.73, lng = -60.53, capaActual, capas = {};
 
-function iniciarMapa(){
-  map=L.map('map').setView([lat,lng],16);
+function iniciarMapa() {
+  map = L.map('map').setView([lat, lng], 16);
 
-  const mapa=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
-  const satelite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
-  const etiquetas=L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png');
-  const lugares=L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',{opacity:0.3});
-  const hibrido=L.layerGroup([satelite,lugares,etiquetas]);
-  const google=L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
+  const mapa     = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png');
+  const satelite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+  const etiquetas= L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png');
+  const lugares  = L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', { opacity: 0.3 });
+  const hibrido  = L.layerGroup([satelite, lugares, etiquetas]);
+  const google   = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}');
 
-  capas={mapa,satelite,hibrido,google};
-  capaActual=google;
+  capas = { mapa, satelite, hibrido, google };
+  capaActual = google;
   capaActual.addTo(map);
 
-  map.on("move",()=>{let c=map.getCenter();lat=c.lat;lng=c.lng;});
+  map.on("move", () => { let c = map.getCenter(); lat = c.lat; lng = c.lng; });
   irMiUbicacion();
 }
 
-function cambiarCapa(tipo){
-  if(capaActual) map.removeLayer(capaActual);
-  capaActual=capas[tipo];
+function cambiarCapa(tipo) {
+  if (capaActual) map.removeLayer(capaActual);
+  capaActual = capas[tipo];
   capaActual.addTo(map);
 }
 
-function irMiUbicacion(){
-  navigator.geolocation.getCurrentPosition(p=>{
-    lat=p.coords.latitude;
-    lng=p.coords.longitude;
-    map.setView([lat,lng],17);
+function irMiUbicacion() {
+  navigator.geolocation.getCurrentPosition(p => {
+    lat = p.coords.latitude;
+    lng = p.coords.longitude;
+    map.setView([lat, lng], 17);
   });
 }
 
-function toggleFullscreen(){
+function toggleFullscreen() {
   document.getElementById("mapBox").classList.toggle("fullscreen");
-  setTimeout(()=>map.invalidateSize(),300);
+  setTimeout(() => map.invalidateSize(), 300);
 }
 
-window.onload=iniciarMapa;
+// ─── FERIAS DINÁMICAS ────────────────────────────────
+async function cargarFeriasChips() {
+  const cont = document.getElementById("chips-ferias");
+  try {
+    const res    = await fetch(API + "/ferias/lista");
+    const ferias = await res.json();
 
-function enviar(){
+    if (ferias.length === 0) {
+      cont.innerHTML = '<span style="color:#6b7280;font-size:13px;">Sin ferias cargadas aún</span>';
+      return;
+    }
 
-  if(!usuario){
+    cont.innerHTML = ferias.map(f => `
+      <label class="chip">
+        <input type="checkbox" name="feria" value="${f.nombre}">
+        <span>${f.nombre}</span>
+      </label>
+    `).join('');
+
+  } catch (e) {
+    cont.innerHTML = '<span style="color:#ef4444;font-size:13px;">❌ Error cargando ferias</span>';
+  }
+}
+
+// ─── CONTADOR CARACTERES ─────────────────────────────
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("observaciones").addEventListener("input", function () {
+    document.getElementById("contador").innerText = this.value.length + " / 140";
+  });
+});
+
+// ─── INIT ────────────────────────────────────────────
+window.onload = () => {
+  iniciarMapa();
+  cargarFeriasChips();
+};
+
+// ─── ENVIAR ──────────────────────────────────────────
+function enviar() {
+  if (!usuario) {
     alert("⚠️ Debe iniciar sesión con Google");
     return;
   }
 
-  const boton = document.getElementById("btnEnviar");
+  const boton  = document.getElementById("btnEnviar");
   const loader = document.getElementById("loader");
 
   boton.disabled = true;
@@ -398,55 +450,54 @@ function enviar(){
 
   let formData = new FormData();
 
-  formData.append("nombre", nombre.value);
-  formData.append("dni", dni.value);
-  formData.append("email", email.value);
-  formData.append("renspa", renspa.value);
+  formData.append("nombre",       document.getElementById("nombre").value);
+  formData.append("dni",          document.getElementById("dni").value);
+  formData.append("email",        document.getElementById("email").value);
+  formData.append("renspa",       document.getElementById("renspa").value);
+  formData.append("observaciones",document.getElementById("observaciones").value);
+  formData.append("lat",          lat);
+  formData.append("lng",          lng);
+  formData.append("operador_nombre", usuario.name);
+  formData.append("operador_email",  usuario.email);
 
-  // ✅ ACTIVIDAD ARRAY
+  // Actividades
   let actividades = [];
   document.querySelectorAll('input[name="actividad"]:checked')
     .forEach(c => actividades.push(c.value));
-
   formData.append("actividad", actividades.join(", "));
 
-  formData.append("observaciones", observaciones.value);
-
-  let ferias=[];
+  // Ferias
+  let ferias = [];
   document.querySelectorAll('input[name="feria"]:checked')
-    .forEach(c=>ferias.push(c.value));
+    .forEach(c => ferias.push(c.value));
+  formData.append("feria", ferias.join(", "));
 
-  formData.append("feria",ferias.join(", "));
-  formData.append("lat",lat);
-  formData.append("lng",lng);
+  // Foto
+  const file = document.getElementById("foto").files[0];
+  if (file) formData.append("foto", file);
 
-  formData.append("operador_nombre",usuario.name);
-  formData.append("operador_email",usuario.email);
-
-  let file = foto.files[0];
-  if(file){
-    formData.append("foto", file);
-  }
-
-  fetch("https://api-ferias-da8q.onrender.com/guardar",{
-    method:"POST",
-    body:formData
+  fetch(API + "/guardar", {
+    method: "POST",
+    body: formData
   })
-  .then(()=>alert("✅ Guardado correctamente"))
-  .catch(()=>alert("❌ Error al enviar"))
-  .finally(()=>{
-    boton.disabled = false;
+  .then(() => {
+    alert("✅ Guardado correctamente");
+    // Reset campos
+    ["nombre","dni","email","renspa","observaciones"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    document.getElementById("foto").value = "";
+    document.querySelectorAll('input[name="actividad"], input[name="feria"]')
+      .forEach(c => c.checked = false);
+    document.getElementById("contador").innerText = "0 / 140";
+  })
+  .catch(() => alert("❌ Error al enviar"))
+  .finally(() => {
+    boton.disabled  = false;
     boton.innerText = "ENVIAR FORMULARIO";
     loader.style.display = "none";
   });
 }
-  const obs = document.getElementById("observaciones");
-  const contador = document.getElementById("contador");
-
-  obs.addEventListener("input", () => {
-    contador.innerText = obs.value.length + " /140";
-  });
-  
 </script>
 
 </body>
